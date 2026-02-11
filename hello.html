@@ -1,1 +1,53 @@
-<h1>你好！小田</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>在线算命</title>
+    <style>
+        .container { max-width: 600px; margin: 50px auto; padding: 20px; }
+        .result { margin-top: 20px; padding: 15px; background: #f5f5f5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>八字算命</h1>
+        <input type="date" id="birthDate">
+        <button onclick="calculate()">开始算命</button>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        function calculate() {
+            const birthDate = document.getElementById('birthDate').value;
+            const date = new Date(birthDate);
+            
+            // 算命逻辑
+            const zodiacs = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'];
+            const zodiacIndex = (date.getFullYear() - 4) % 12;
+            const zodiac = zodiacs[zodiacIndex];
+            
+            const fortunes = [
+                "大吉：今日运势极佳，宜把握机会",
+                "中平：平稳之日，按部就班",
+                "小凶：谨慎行事，避免冲动"
+            ];
+            const randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+            
+            document.getElementById('result').innerHTML = `
+                <h3>${zodiac}年出生</h3>
+                <p>${randomFortune}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
