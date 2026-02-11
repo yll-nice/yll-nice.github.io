@@ -1,53 +1,483 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <title>在线算命</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+    <title>AI智能算命 · 八字紫微斗数</title>
     <style>
-        .container { max-width: 600px; margin: 50px auto; padding: 20px; }
-        .result { margin-top: 20px; padding: 15px; background: #f5f5f5; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Noto Serif SC", "Microsoft YaHei", "宋体", serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1e2b3c 0%, #2c3e50 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #c49b1f;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            letter-spacing: 8px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-style: italic;
+            border-bottom: 1px dashed #c49b1f;
+            padding-bottom: 15px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        input:focus, select:focus {
+            border-color: #c49b1f;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(196,155,31,0.2);
+        }
+        
+        .row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .row .input-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.3em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #c49b1f, #8b6914);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            letter-spacing: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(196,155,31,0.4);
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(196,155,31,0.6);
+            background: linear-gradient(135deg, #d4aa2a, #9c7a1a);
+        }
+        
+        .result-card {
+            background: linear-gradient(145deg, #f9f7f3, #fff);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border-left: 8px solid #c49b1f;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.03);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: #2c3e50;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-right: 10px;
+        }
+        
+        .fortune-good { color: #27ae60; }
+        .fortune-normal { color: #e67e22; }
+        .fortune-bad { color: #e74c3c; }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .detail-item {
+            background: #f0eee9;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .detail-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #999;
+            font-size: 0.85em;
+        }
+        
+        @media (max-width: 480px) {
+            .container { padding: 20px; }
+            .row { flex-direction: column; gap: 0; }
+            .detail-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>八字算命</h1>
-        <input type="date" id="birthDate">
-        <button onclick="calculate()">开始算命</button>
-        <div id="result" class="result"></div>
+        <h1>🔯 玄机阁</h1>
+        <div class="subtitle">—— 知命 · 造运 · 顺天行 ——</div>
+        
+        <!-- 输入表单 -->
+        <div class="input-group">
+            <label>📛 尊姓大名</label>
+            <input type="text" id="userName" placeholder="请输入您的姓名" value="缘主">
+        </div>
+        
+        <div class="row">
+            <div class="input-group">
+                <label>📅 出生日期</label>
+                <input type="date" id="birthDate" value="1990-01-01">
+            </div>
+            <div class="input-group">
+                <label>⏰ 出生时辰</label>
+                <select id="birthHour">
+                    <option value="子时">子时 (23:00-01:00)</option>
+                    <option value="丑时">丑时 (01:00-03:00)</option>
+                    <option value="寅时">寅时 (03:00-05:00)</option>
+                    <option value="卯时" selected>卯时 (05:00-07:00)</option>
+                    <option value="辰时">辰时 (07:00-09:00)</option>
+                    <option value="巳时">巳时 (09:00-11:00)</option>
+                    <option value="午时">午时 (11:00-13:00)</option>
+                    <option value="未时">未时 (13:00-15:00)</option>
+                    <option value="申时">申时 (15:00-17:00)</option>
+                    <option value="酉时">酉时 (17:00-19:00)</option>
+                    <option value="戌时">戌时 (19:00-21:00)</option>
+                    <option value="亥时">亥时 (21:00-23:00)</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="input-group">
+                <label>⚥ 性别</label>
+                <select id="gender">
+                    <option value="男">乾造 · 男</option>
+                    <option value="女">坤造 · 女</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>🔮 测算项目</label>
+                <select id="fortuneType">
+                    <option value="general">综合运势 · 全盘解析</option>
+                    <option value="wealth">财运 · 财帛宫</option>
+                    <option value="career">事业 · 官禄宫</option>
+                    <option value="love">姻缘 · 夫妻宫</option>
+                    <option value="health">健康 · 疾厄宫</option>
+                </select>
+            </div>
+        </div>
+        
+        <button onclick="calculateFortune()">🔮 起卦测算</button>
+        
+        <!-- 结果展示区 -->
+        <div id="resultArea" style="display: none;">
+            <div class="result-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h2 style="color: #2c3e50;" id="greetingText">缘主，您好</h2>
+                    <span class="badge" id="zodiacBadge">生肖：龙</span>
+                </div>
+                
+                <div style="font-size: 1.2em; margin-bottom: 20px; padding: 10px; background: #fff3cd; border-radius: 8px;" id="mainFortune">
+                    大吉大利，万事如意
+                </div>
+                
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">八字</div>
+                        <div class="detail-value" id="baziText">辛酉 甲午 丙寅 戊子</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">五行</div>
+                        <div class="detail-value" id="wuxingText">金木水火土</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">命宫主星</div>
+                        <div class="detail-value" id="mainStar">紫微</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">大运</div>
+                        <div class="detail-value" id="dayunText">3-12岁</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <h4 style="color: #c49b1f; margin-bottom: 10px;">📋 详细解读</h4>
+                    <p id="detailText" style="line-height: 1.8; color: #444;">
+                        命盘显示您今日气场强大，适合做出重要决策。
+                    </p>
+                </div>
+                
+                <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ccc;">
+                    <p style="color: #888; font-size: 0.9em;">
+                        ⚠️ 测算结果由AI生成，仅供娱乐。命运掌握在自己手中。
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            © 玄机阁 · 传承千年易学智慧 · 即时在线起卦
+        </div>
     </div>
 
     <script>
-        function calculate() {
+        // 完整的八字计算库
+        const zodiacs = ['🐭 鼠', '🐮 牛', '🐯 虎', '🐰 兔', '🐲 龙', '🐍 蛇', '🐴 马', '🐑 羊', '🐵 猴', '🐔 鸡', '🐶 狗', '🐷 猪'];
+        const heavenlyStems = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
+        const earthlyBranches = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
+        const fiveElements = ['金', '木', '水', '火', '土'];
+        const starMaster = ['紫微', '天机', '太阳', '武曲', '天同', '廉贞', '天府', '太阴', '贪狼', '巨门', '天相', '天梁', '七杀', '破军'];
+        
+        // 丰富的命理解读库
+        const fortuneDetails = {
+            general: [
+                '命宫紫微坐守，帝王之相，近期有贵人相助，事业可期。',
+                '天机化禄，智慧大开，适合学习新技能或解决疑难问题。',
+                '太阳照命，光明磊落，人际关系和谐，易得他人信任。',
+                '武曲化权，财运亨通，正财偏财皆有收获。',
+                '天同化忌，需注意情绪管理，避免因小失大。',
+                '廉贞化禄，桃花旺盛，单身者易遇良缘。',
+                '天府守财，积蓄增加，但需防小人窥视。',
+                '太阴照命，内心宁静，适合修身养性。',
+                '贪狼入命，交际活跃，应酬增多，把握人脉商机。',
+                '巨门化权，口才出众，适合谈判、演讲。'
+            ],
+            wealth: [
+                '财帛宫武曲化禄，正财稳定，可考虑长期投资。',
+                '太阴守财，适合房产、收藏类投资。',
+                '贪狼化忌，慎防投机风险，勿贪快钱。',
+                '天府得地，收入稳步增长，宜储蓄。',
+                '破军化禄，意外之财，但来得快去得快。'
+            ],
+            career: [
+                '官禄宫紫微，有领导才能，近期有晋升机会。',
+                '天机守事业，适合策划、咨询类工作。',
+                '太阳化权，得上级赏识，可主动争取项目。',
+                '武曲临官，执行力强，业绩突出。',
+                '天梁化科，适合教育、医疗、公益事业。'
+            ],
+            love: [
+                '夫妻宫廉贞化禄，感情甜蜜，单身者易遇正缘。',
+                '贪狼入桃花，魅力四射，但需防烂桃花。',
+                '太阴守夫妻，配偶温柔体贴，家庭和睦。',
+                '巨门化忌，注意沟通方式，避免口舌。',
+                '天相得地，姻缘稳定，适合订婚、结婚。'
+            ],
+            health: [
+                '疾厄宫天梁，体质较好，注意肠胃保养。',
+                '七杀守疾厄，精力旺盛，但防意外伤灾。',
+                '破军化禄，病痛速愈，康复能力强。',
+                '天同化忌，注意情绪压力，适当放松。',
+                '太阳照疾厄，心肺功能佳，多晒太阳有益。'
+            ]
+        };
+
+        function calculateFortune() {
+            // 获取输入值
+            const name = document.getElementById('userName').value || '缘主';
             const birthDate = document.getElementById('birthDate').value;
-            const date = new Date(birthDate);
+            const birthHour = document.getElementById('birthHour').value;
+            const gender = document.getElementById('gender').value;
+            const fortuneType = document.getElementById('fortuneType').value;
             
-            // 算命逻辑
-            const zodiacs = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'];
-            const zodiacIndex = (date.getFullYear() - 4) % 12;
+            if (!birthDate) {
+                alert('请选择出生日期！');
+                return;
+            }
+            
+            const date = new Date(birthDate);
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            
+            // === 1. 计算生肖 ===
+            const zodiacIndex = (year - 4) % 12;
             const zodiac = zodiacs[zodiacIndex];
             
-            const fortunes = [
-                "大吉：今日运势极佳，宜把握机会",
-                "中平：平稳之日，按部就班",
-                "小凶：谨慎行事，避免冲动"
-            ];
-            const randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+            // === 2. 计算八字（简化版） ===
+            const stemIndex = (year - 3) % 10;
+            const branchIndex = (year - 3) % 12;
+            const monthStem = heavenlyStems[(stemIndex + month) % 10];
+            const monthBranch = earthlyBranches[(month + 1) % 12];
+            const dayStem = heavenlyStems[(day + stemIndex) % 10];
+            const dayBranch = earthlyBranches[(day + branchIndex) % 12];
+            const hourBranch = birthHour.slice(0, 1) === '子' ? '子' : 
+                              birthHour.slice(0, 1) === '丑' ? '丑' : 
+                              birthHour.slice(0, 1) === '寅' ? '寅' : 
+                              birthHour.slice(0, 1) === '卯' ? '卯' : 
+                              birthHour.slice(0, 1) === '辰' ? '辰' : 
+                              birthHour.slice(0, 1) === '巳' ? '巳' : 
+                              birthHour.slice(0, 1) === '午' ? '午' : 
+                              birthHour.slice(0, 1) === '未' ? '未' : 
+                              birthHour.slice(0, 1) === '申' ? '申' : 
+                              birthHour.slice(0, 1) === '酉' ? '酉' : 
+                              birthHour.slice(0, 1) === '戌' ? '戌' : '亥';
             
-            document.getElementById('result').innerHTML = `
-                <h3>${zodiac}年出生</h3>
-                <p>${randomFortune}</p>
+            const hourStem = heavenlyStems[(dayStem + earthlyBranches.indexOf(hourBranch)) % 10];
+            
+            const bazi = `${heavenlyStems[stemIndex]}${earthlyBranches[branchIndex]} ${monthStem}${monthBranch} ${dayStem}${dayBranch} ${hourStem}${hourBranch}`;
+            
+            // === 3. 计算五行 ===
+            const elementIndex = year % 5;
+            const element = fiveElements[elementIndex];
+            const element2 = fiveElements[(elementIndex + 2) % 5];
+            const wuxing = `${element}${element2}命 · ${element}多${element2}少`;
+            
+            // === 4. 命宫主星 ===
+            const starIndex = (year + month + day) % starMaster.length;
+            const mainStar = starMaster[starIndex];
+            
+            // === 5. 大运年龄 ===
+            const startYear = (year % 10) + 1;
+            const dayun = `${startYear}-${startYear + 9}岁`;
+            
+            // === 6. 主运势（基于选择类型） ===
+            const fortuneArray = fortuneDetails[fortuneType] || fortuneDetails.general;
+            let fortuneText = fortuneArray[(year + month + day) % fortuneArray.length];
+            
+            // 根据性别微调运势
+            if (gender === '男') {
+                fortuneText += ' 乾造阳刚，宜主动进取。';
+            } else {
+                fortuneText += ' 坤造柔顺，宜以柔克刚。';
+            }
+            
+            // === 7. 吉凶评分和运势等级 ===
+            const score = (year + month + day + hourStem.charCodeAt(0)) % 100;
+            let fortuneLevel, fortuneClass, fortuneEmoji;
+            
+            if (score > 80) {
+                fortuneLevel = '大吉';
+                fortuneClass = 'fortune-good';
+                fortuneEmoji = '🌟🌟🌟🌟🌟';
+            } else if (score > 60) {
+                fortuneLevel = '上吉';
+                fortuneClass = 'fortune-good';
+                fortuneEmoji = '🌟🌟🌟🌟';
+            } else if (score > 40) {
+                fortuneLevel = '中平';
+                fortuneClass = 'fortune-normal';
+                fortuneEmoji = '🌟🌟🌟';
+            } else if (score > 20) {
+                fortuneLevel = '小凶';
+                fortuneClass = 'fortune-bad';
+                fortuneEmoji = '🌟🌟';
+            } else {
+                fortuneLevel = '大凶';
+                fortuneClass = 'fortune-bad';
+                fortuneEmoji = '🌟';
+            }
+            
+            // 今日运势建议
+            const suggestions = [
+                '宜：签约、出行、会友',
+                '忌：投资、争吵、熬夜',
+                '幸运色：红色、金色',
+                '幸运数：3、7、9',
+                '幸运方位：东南方'
+            ];
+            const suggestion = suggestions[score % suggestions.length];
+            
+            // === 8. 更新界面 ===
+            document.getElementById('greetingText').innerHTML = `🧧 ${name} · 命盘解析`;
+            document.getElementById('zodiacBadge').innerHTML = `生肖：${zodiac}`;
+            
+            const mainFortuneHtml = `
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 1.5rem;">${fortuneEmoji}</span>
+                    <span style="font-size: 1.8rem; font-weight: bold; color: #c49b1f;">${fortuneLevel}</span>
+                    <span style="font-size: 1.5rem;">${fortuneEmoji}</span>
+                </div>
+                <div style="margin-top: 10px; font-size: 1.1rem; color: #2c3e50;">
+                    综合得分：${score}分 · ${suggestion}
+                </div>
             `;
+            document.getElementById('mainFortune').innerHTML = mainFortuneHtml;
+            document.getElementById('mainFortune').className = `result-card ${fortuneClass}`;
+            
+            document.getElementById('baziText').innerHTML = bazi;
+            document.getElementById('wuxingText').innerHTML = wuxing;
+            document.getElementById('mainStar').innerHTML = mainStar;
+            document.getElementById('dayunText').innerHTML = dayun;
+            
+            // 详细解读
+            let detailHtml = `
+                <p><strong>八字排盘：</strong>${bazi}</p>
+                <p><strong>命主：</strong>${mainStar}星 · ${element}${element2}命格</p>
+                <p><strong>运势解读：</strong>${fortuneText}</p>
+                <p><strong>开运建议：</strong>${suggestion}</p>
+                <p style="margin-top: 15px; font-style: italic; color: #c49b1f;">
+                    “一命二运三风水，四积阴德五读书” —— 知命而后造运，方为智者。
+                </p>
+            `;
+            document.getElementById('detailText').innerHTML = detailHtml;
+            
+            // 显示结果区域
+            document.getElementById('resultArea').style.display = 'block';
+            
+            // 滚动到结果区域
+            document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
         }
     </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
 </body>
 </html>
