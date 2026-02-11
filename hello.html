@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
     <title>AI智能算命 · 八字紫微斗数</title>
     <style>
+        /* 完全相同的样式代码，为了节省篇幅省略，请直接复制上面回答中的完整style部分 */
         * {
             margin: 0;
             padding: 0;
@@ -186,23 +187,23 @@
         <div class="row">
             <div class="input-group">
                 <label>📅 出生日期</label>
-                <input type="date" id="birthDate" value="1990-01-01">
+                <input type="date" id="birthDate">
             </div>
             <div class="input-group">
                 <label>⏰ 出生时辰</label>
                 <select id="birthHour">
-                    <option value="子时">子时 (23:00-01:00)</option>
-                    <option value="丑时">丑时 (01:00-03:00)</option>
-                    <option value="寅时">寅时 (03:00-05:00)</option>
-                    <option value="卯时" selected>卯时 (05:00-07:00)</option>
-                    <option value="辰时">辰时 (07:00-09:00)</option>
-                    <option value="巳时">巳时 (09:00-11:00)</option>
-                    <option value="午时">午时 (11:00-13:00)</option>
-                    <option value="未时">未时 (13:00-15:00)</option>
-                    <option value="申时">申时 (15:00-17:00)</option>
-                    <option value="酉时">酉时 (17:00-19:00)</option>
-                    <option value="戌时">戌时 (19:00-21:00)</option>
-                    <option value="亥时">亥时 (21:00-23:00)</option>
+                    <option value="子">子时 (23:00-01:00)</option>
+                    <option value="丑">丑时 (01:00-03:00)</option>
+                    <option value="寅">寅时 (03:00-05:00)</option>
+                    <option value="卯" selected>卯时 (05:00-07:00)</option>
+                    <option value="辰">辰时 (07:00-09:00)</option>
+                    <option value="巳">巳时 (09:00-11:00)</option>
+                    <option value="午">午时 (11:00-13:00)</option>
+                    <option value="未">未时 (13:00-15:00)</option>
+                    <option value="申">申时 (15:00-17:00)</option>
+                    <option value="酉">酉时 (17:00-19:00)</option>
+                    <option value="戌">戌时 (19:00-21:00)</option>
+                    <option value="亥">亥时 (21:00-23:00)</option>
                 </select>
             </div>
         </div>
@@ -281,58 +282,10 @@
     </div>
 
     <script>
-        // 完整的八字计算库
-        const zodiacs = ['🐭 鼠', '🐮 牛', '🐯 虎', '🐰 兔', '🐲 龙', '🐍 蛇', '🐴 马', '🐑 羊', '🐵 猴', '🐔 鸡', '🐶 狗', '🐷 猪'];
-        const heavenlyStems = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
-        const earthlyBranches = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
-        const fiveElements = ['金', '木', '水', '火', '土'];
-        const starMaster = ['紫微', '天机', '太阳', '武曲', '天同', '廉贞', '天府', '太阴', '贪狼', '巨门', '天相', '天梁', '七杀', '破军'];
-        
-        // 丰富的命理解读库
-        const fortuneDetails = {
-            general: [
-                '命宫紫微坐守，帝王之相，近期有贵人相助，事业可期。',
-                '天机化禄，智慧大开，适合学习新技能或解决疑难问题。',
-                '太阳照命，光明磊落，人际关系和谐，易得他人信任。',
-                '武曲化权，财运亨通，正财偏财皆有收获。',
-                '天同化忌，需注意情绪管理，避免因小失大。',
-                '廉贞化禄，桃花旺盛，单身者易遇良缘。',
-                '天府守财，积蓄增加，但需防小人窥视。',
-                '太阴照命，内心宁静，适合修身养性。',
-                '贪狼入命，交际活跃，应酬增多，把握人脉商机。',
-                '巨门化权，口才出众，适合谈判、演讲。'
-            ],
-            wealth: [
-                '财帛宫武曲化禄，正财稳定，可考虑长期投资。',
-                '太阴守财，适合房产、收藏类投资。',
-                '贪狼化忌，慎防投机风险，勿贪快钱。',
-                '天府得地，收入稳步增长，宜储蓄。',
-                '破军化禄，意外之财，但来得快去得快。'
-            ],
-            career: [
-                '官禄宫紫微，有领导才能，近期有晋升机会。',
-                '天机守事业，适合策划、咨询类工作。',
-                '太阳化权，得上级赏识，可主动争取项目。',
-                '武曲临官，执行力强，业绩突出。',
-                '天梁化科，适合教育、医疗、公益事业。'
-            ],
-            love: [
-                '夫妻宫廉贞化禄，感情甜蜜，单身者易遇正缘。',
-                '贪狼入桃花，魅力四射，但需防烂桃花。',
-                '太阴守夫妻，配偶温柔体贴，家庭和睦。',
-                '巨门化忌，注意沟通方式，避免口舌。',
-                '天相得地，姻缘稳定，适合订婚、结婚。'
-            ],
-            health: [
-                '疾厄宫天梁，体质较好，注意肠胃保养。',
-                '七杀守疾厄，精力旺盛，但防意外伤灾。',
-                '破军化禄，病痛速愈，康复能力强。',
-                '天同化忌，注意情绪压力，适当放松。',
-                '太阳照疾厄，心肺功能佳，多晒太阳有益。'
-            ]
-        };
-
-        function calculateFortune() {
+        // 确保函数在全局作用域
+        window.calculateFortune = function() {
+            console.log('起卦测算开始...');
+            
             // 获取输入值
             const name = document.getElementById('userName').value || '缘主';
             const birthDate = document.getElementById('birthDate').value;
@@ -340,70 +293,123 @@
             const gender = document.getElementById('gender').value;
             const fortuneType = document.getElementById('fortuneType').value;
             
+            // 验证必填项
             if (!birthDate) {
                 alert('请选择出生日期！');
                 return;
             }
             
-            const date = new Date(birthDate);
+            // 设置默认日期（如果没有选择）
+            let date;
+            if (birthDate) {
+                date = new Date(birthDate);
+            } else {
+                date = new Date('1990-01-01');
+            }
+            
             const year = date.getFullYear();
             const month = date.getMonth() + 1;
             const day = date.getDate();
             
+            // 数据定义
+            const zodiacs = ['🐭 鼠', '🐮 牛', '🐯 虎', '🐰 兔', '🐲 龙', '🐍 蛇', '🐴 马', '🐑 羊', '🐵 猴', '🐔 鸡', '🐶 狗', '🐷 猪'];
+            const heavenlyStems = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
+            const earthlyBranches = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
+            const fiveElements = ['金', '木', '水', '火', '土'];
+            const starMaster = ['紫微', '天机', '太阳', '武曲', '天同', '廉贞', '天府', '太阴', '贪狼', '巨门', '天相', '天梁', '七杀', '破军'];
+            
+            // 命理解读库
+            const fortuneDetails = {
+                general: [
+                    '命宫紫微坐守，帝王之相，近期有贵人相助，事业可期。',
+                    '天机化禄，智慧大开，适合学习新技能或解决疑难问题。',
+                    '太阳照命，光明磊落，人际关系和谐，易得他人信任。',
+                    '武曲化权，财运亨通，正财偏财皆有收获。',
+                    '天同化忌，需注意情绪管理，避免因小失大。',
+                    '廉贞化禄，桃花旺盛，单身者易遇良缘。',
+                    '天府守财，积蓄增加，但需防小人窥视。',
+                    '太阴照命，内心宁静，适合修身养性。',
+                    '贪狼入命，交际活跃，应酬增多，把握人脉商机。',
+                    '巨门化权，口才出众，适合谈判、演讲。'
+                ],
+                wealth: [
+                    '财帛宫武曲化禄，正财稳定，可考虑长期投资。',
+                    '太阴守财，适合房产、收藏类投资。',
+                    '贪狼化忌，慎防投机风险，勿贪快钱。',
+                    '天府得地，收入稳步增长，宜储蓄。',
+                    '破军化禄，意外之财，但来得快去得快。'
+                ],
+                career: [
+                    '官禄宫紫微，有领导才能，近期有晋升机会。',
+                    '天机守事业，适合策划、咨询类工作。',
+                    '太阳化权，得上级赏识，可主动争取项目。',
+                    '武曲临官，执行力强，业绩突出。',
+                    '天梁化科，适合教育、医疗、公益事业。'
+                ],
+                love: [
+                    '夫妻宫廉贞化禄，感情甜蜜，单身者易遇正缘。',
+                    '贪狼入桃花，魅力四射，但需防烂桃花。',
+                    '太阴守夫妻，配偶温柔体贴，家庭和睦。',
+                    '巨门化忌，注意沟通方式，避免口舌。',
+                    '天相得地，姻缘稳定，适合订婚、结婚。'
+                ],
+                health: [
+                    '疾厄宫天梁，体质较好，注意肠胃保养。',
+                    '七杀守疾厄，精力旺盛，但防意外伤灾。',
+                    '破军化禄，病痛速愈，康复能力强。',
+                    '天同化忌，注意情绪压力，适当放松。',
+                    '太阳照疾厄，心肺功能佳，多晒太阳有益。'
+                ]
+            };
+            
             // === 1. 计算生肖 ===
             const zodiacIndex = (year - 4) % 12;
-            const zodiac = zodiacs[zodiacIndex];
+            const zodiac = zodiacs[zodiacIndex >= 0 ? zodiacIndex : zodiacIndex + 12];
             
-            // === 2. 计算八字（简化版） ===
+            // === 2. 计算八字 ===
             const stemIndex = (year - 3) % 10;
             const branchIndex = (year - 3) % 12;
             const monthStem = heavenlyStems[(stemIndex + month) % 10];
             const monthBranch = earthlyBranches[(month + 1) % 12];
             const dayStem = heavenlyStems[(day + stemIndex) % 10];
             const dayBranch = earthlyBranches[(day + branchIndex) % 12];
-            const hourBranch = birthHour.slice(0, 1) === '子' ? '子' : 
-                              birthHour.slice(0, 1) === '丑' ? '丑' : 
-                              birthHour.slice(0, 1) === '寅' ? '寅' : 
-                              birthHour.slice(0, 1) === '卯' ? '卯' : 
-                              birthHour.slice(0, 1) === '辰' ? '辰' : 
-                              birthHour.slice(0, 1) === '巳' ? '巳' : 
-                              birthHour.slice(0, 1) === '午' ? '午' : 
-                              birthHour.slice(0, 1) === '未' ? '未' : 
-                              birthHour.slice(0, 1) === '申' ? '申' : 
-                              birthHour.slice(0, 1) === '酉' ? '酉' : 
-                              birthHour.slice(0, 1) === '戌' ? '戌' : '亥';
             
-            const hourStem = heavenlyStems[(dayStem + earthlyBranches.indexOf(hourBranch)) % 10];
+            // 处理时辰
+            let hourBranch = birthHour || '卯';
+            let hourIndex = earthlyBranches.indexOf(hourBranch);
+            if (hourIndex === -1) hourIndex = 3; // 默认卯时
             
-            const bazi = `${heavenlyStems[stemIndex]}${earthlyBranches[branchIndex]} ${monthStem}${monthBranch} ${dayStem}${dayBranch} ${hourStem}${hourBranch}`;
+            const hourStem = heavenlyStems[(heavenlyStems.indexOf(dayStem) + hourIndex) % 10];
+            
+            const bazi = `${heavenlyStems[stemIndex >= 0 ? stemIndex : stemIndex + 10]}${earthlyBranches[branchIndex >= 0 ? branchIndex : branchIndex + 12]} ${monthStem}${monthBranch} ${dayStem}${dayBranch} ${hourStem}${hourBranch}`;
             
             // === 3. 计算五行 ===
-            const elementIndex = year % 5;
+            const elementIndex = Math.abs(year % 5);
             const element = fiveElements[elementIndex];
             const element2 = fiveElements[(elementIndex + 2) % 5];
             const wuxing = `${element}${element2}命 · ${element}多${element2}少`;
             
             // === 4. 命宫主星 ===
-            const starIndex = (year + month + day) % starMaster.length;
+            const starIndex = Math.abs((year + month + day) % starMaster.length);
             const mainStar = starMaster[starIndex];
             
             // === 5. 大运年龄 ===
             const startYear = (year % 10) + 1;
             const dayun = `${startYear}-${startYear + 9}岁`;
             
-            // === 6. 主运势（基于选择类型） ===
+            // === 6. 主运势 ===
             const fortuneArray = fortuneDetails[fortuneType] || fortuneDetails.general;
-            let fortuneText = fortuneArray[(year + month + day) % fortuneArray.length];
+            const fortuneIndex = Math.abs((year + month + day + hourIndex) % fortuneArray.length);
+            let fortuneText = fortuneArray[fortuneIndex];
             
-            // 根据性别微调运势
             if (gender === '男') {
                 fortuneText += ' 乾造阳刚，宜主动进取。';
             } else {
                 fortuneText += ' 坤造柔顺，宜以柔克刚。';
             }
             
-            // === 7. 吉凶评分和运势等级 ===
-            const score = (year + month + day + hourStem.charCodeAt(0)) % 100;
+            // === 7. 吉凶评分 ===
+            const score = Math.abs((year + month + day + hourIndex + name.length) % 100);
             let fortuneLevel, fortuneClass, fortuneEmoji;
             
             if (score > 80) {
@@ -428,13 +434,13 @@
                 fortuneEmoji = '🌟';
             }
             
-            // 今日运势建议
+            // 建议
             const suggestions = [
-                '宜：签约、出行、会友',
-                '忌：投资、争吵、熬夜',
-                '幸运色：红色、金色',
-                '幸运数：3、7、9',
-                '幸运方位：东南方'
+                '宜：签约、出行、会友 | 忌：投资、争吵、熬夜',
+                '幸运色：红色、金色 | 幸运数：3、7、9',
+                '幸运方位：东南方 | 贵人：属蛇、属鸡者',
+                '宜：学习、规划、静心 | 忌：冲动决策',
+                '宜：社交、展示才华 | 忌：独断专行'
             ];
             const suggestion = suggestions[score % suggestions.length];
             
@@ -449,11 +455,13 @@
                     <span style="font-size: 1.5rem;">${fortuneEmoji}</span>
                 </div>
                 <div style="margin-top: 10px; font-size: 1.1rem; color: #2c3e50;">
-                    综合得分：${score}分 · ${suggestion}
+                    综合得分：${score}分
+                </div>
+                <div style="margin-top: 8px; color: #666;">
+                    ${suggestion}
                 </div>
             `;
             document.getElementById('mainFortune').innerHTML = mainFortuneHtml;
-            document.getElementById('mainFortune').className = `result-card ${fortuneClass}`;
             
             document.getElementById('baziText').innerHTML = bazi;
             document.getElementById('wuxingText').innerHTML = wuxing;
@@ -477,7 +485,25 @@
             
             // 滚动到结果区域
             document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
+            
+            console.log('测算完成！');
         }
+
+        // 页面加载完成后设置默认日期
+        window.onload = function() {
+            // 设置默认日期为30年前
+            const today = new Date();
+            const defaultDate = new Date(today.getFullYear() - 30, today.getMonth(), today.getDate());
+            const year = defaultDate.getFullYear();
+            const month = String(defaultDate.getMonth() + 1).padStart(2, '0');
+            const day = String(defaultDate.getDate()).padStart(2, '0');
+            document.getElementById('birthDate').value = `${year}-${month}-${day}`;
+            
+            // 触发一次默认测算，显示示例
+            setTimeout(() => {
+                window.calculateFortune();
+            }, 100);
+        };
     </script>
 </body>
 </html>
